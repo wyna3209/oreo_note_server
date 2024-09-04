@@ -8,7 +8,7 @@ const SCOPES = ['https://www.googleapis.com/auth/drive'];
 
 // GoogleAuth를 사용하여 인증 설정
 const auth = new GoogleAuth({
-  keyFile: JSON.parse(process.env.GOOGLE_CREDENTIALS),  // 서비스 계정 키 파일의 경로
+  keyFile: './credentials.json',  // 서비스 계정 키 파일의 경로
   scopes: SCOPES,
 });
 
