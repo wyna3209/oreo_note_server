@@ -4,12 +4,17 @@ const { GoogleAuth } = require('google-auth-library');
 
 
 const SCOPES = ['https://www.googleapis.com/auth/drive'];
-const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS);
-
+// 로컬 환경에서는 파일을 직접 불러오고, 서버 환경에서는 환경 변수를 사용
+let credentials;
+if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+  credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS);
+} else {
+  credentials = JSON.parse(fs.readFileSync('./credentials.json', 'utf8'));
+}
 
 // GoogleAuth를 사용하여 인증 설정
 const auth = new GoogleAuth({
-  keyFile: credentials,  // 서비스 계정 키 파일의 경로
+  credentials: credentials,  // 서비스 계정 키 파일의 경로
   scopes: SCOPES,
 });
 
