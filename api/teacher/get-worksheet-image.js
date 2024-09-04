@@ -33,9 +33,8 @@ router.get('/:fileId', async (req, res) => {
   }
 });
 
-
-// PDF 파일을 이미지로 변환하여 클라이언트로 전송하는 엔드포인트
-router.get('/pdf-to-img/:fileId', async (req, res) => {
+// Google Drive에서 PDF 파일을 다운로드하여 클라이언트에 전송하는 엔드포인트
+router.get('/get-pdf/:fileId', async (req, res) => {
   const fileId = req.params.fileId;
 
   try {
@@ -50,35 +49,23 @@ router.get('/pdf-to-img/:fileId', async (req, res) => {
     // 스트림을 파일로 저장
     response.data.pipe(writeStream);
 
-    writeStream.on('finish', async () => {
-      try {
-        const { pdf } = await import('pdf-to-img');
-
-        // PDF 파일을 이미지로 변환
-        const document = await pdf(tempPdfPath, { scale: 2.0 });
-        const images = [];
-
-        for await (const image of document) {
-          images.push(image.toString('base64'));
+    writeStream.on('finish', () => {
+      // PDF 파일이 성공적으로 저장되면 클라이언트로 전송
+      res.download(tempPdfPath, `${fileId}.pdf`, (err) => {
+        if (err) {
+          console.error('Error sending PDF file:', err);
+          res.status(500).send('Error downloading PDF');
         }
 
-        // 클라이언트로 이미지를 전송
-        res.json({ images });
-
-        // 임시 파일 삭제
-        fs.unlinkSync(tempPdfPath); // PDF 파일 삭제
-
-      } catch (conversionError) {
-        console.error('Error during PDF to image conversion:', conversionError);
-        res.status(500).send('Error processing PDF to image conversion');
-      }
+        // 파일 전송 후 임시 파일 삭제
+        fs.unlinkSync(tempPdfPath);
+      });
     });
 
     writeStream.on('error', (err) => {
       console.error('Error writing PDF file:', err);
       res.status(500).send('Error processing PDF file');
     });
-
   } catch (error) {
     console.error('Error accessing Google Drive or processing PDF:', error);
     res.status(500).send('Error processing request');
