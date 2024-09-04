@@ -9,7 +9,7 @@ const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS);
 
 // GoogleAuth를 사용하여 인증 설정
 const auth = new GoogleAuth({
-  credentials: credentials,  // 서비스 계정 키 파일의 경로
+  keyFile: credentials,  // 서비스 계정 키 파일의 경로
   scopes: SCOPES,
 });
 
