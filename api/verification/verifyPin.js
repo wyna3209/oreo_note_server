@@ -1,5 +1,5 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');  // bcrypt 대신 bcryptjs 사용
 const fs = require('fs');
 const router = express.Router();
 
