@@ -6,6 +6,10 @@ const cors = require('cors');
 
 // Import API routes
 const driveFolderRouter = require('./drive/drive-folder');
+
+const verifyPinRouter = require('./api/verification/verifyPin');
+
+
 const teacherApplyWorksheetRouter = require('./api/teacher/apply-worksheet');
 const teacherGetImageWorksheetRouter = require('./api/teacher/get-worksheet-image');
 const teacherUploadImageRouter = require('./api/teacher/upload-image');
@@ -21,6 +25,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Use API routes
 app.use('/drive/drive-folder', driveFolderRouter);
+app.use('/api/verification/verifyPin', verifyPinRouter);
+
 app.use('/api/teacher/apply-worksheet', teacherApplyWorksheetRouter);
 
 app.use('/api/teacher/get-worksheet-image', teacherGetImageWorksheetRouter);
