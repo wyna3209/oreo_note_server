@@ -142,11 +142,38 @@ const getFile = async (fileId, mimeType) => {
     throw error;
   }
 };
+
+
+// 폴더 생성 함수
+async function createFolder(folderName, parentFolderId) {
+  try {
+    const fileMetadata = {
+      'name': folderName,
+      'mimeType': 'application/vnd.google-apps.folder',
+      'parents': [parentFolderId] // 부모 폴더 ID 설정
+    };
+
+    const response = await drive.files.create({
+      resource: fileMetadata,
+      fields: 'id',
+    });
+
+    const folderId = response.data.id;
+    console.log(`Folder '${folderName}' created with ID: ${folderId}`);
+    return folderId;
+  } catch (error) {
+    console.error('Error creating folder:', error);
+    throw new Error('Folder creation failed');
+  }
+}
+
+
 module.exports = {
   drive,
   listFiles,
   getFolderIdByName,
   ensureStudentFolderExists,
   uploadImage,
-  getFile
+  getFile,
+  createFolder
 };
